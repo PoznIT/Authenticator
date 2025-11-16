@@ -1,0 +1,9 @@
+db_config:
+  username: postgres
+  password: postgres
+  db_name: authenticator
+  host: localhost
+  port: 5432
+access:
+  applications:
+    - seekretsanta
