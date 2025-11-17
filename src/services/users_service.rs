@@ -1,7 +1,6 @@
 use crate::config::db_config::DbConfig;
 use crate::db::repositories::user_repository::UserRepository;
 use crate::services::crypto_service::CryptoService;
-use sea_orm::DbErr;
 use std::fmt;
 
 #[derive(Debug)]
@@ -37,23 +36,23 @@ pub struct UserService<'a> {
 }
 
 impl<'a> UserService<'a> {
-    pub async fn new(user_repository: UserRepository) -> Self {
+    pub fn new(user_repository: UserRepository) -> Self {
         UserService {
             user_repository,
             crypto_service: CryptoService::new(),
         }
     }
     pub async fn from_config(config: DbConfig) -> Self {
-        UserService::new(UserRepository::from_config(config).await).await
+        UserService::new(UserRepository::from_config(config).await)
     }
     fn validate_pwd(&self, pwd: &str) -> Result<(), UserServiceError> {
         if pwd.len() >= 8
             && pwd.chars().any(|c| c.is_ascii_uppercase())
             && pwd.chars().any(|c| c.is_ascii_lowercase())
             && pwd.chars().any(|c| c.is_ascii_digit()) {
-            return Err(UserServiceError::PasswordComplexityNotMet)
+            return Ok(())
         }
-        Ok(())
+        Err(UserServiceError::PasswordComplexityNotMet)
     }
 
     pub async fn new_user_access(
@@ -124,32 +123,35 @@ impl<'a> UserService<'a> {
         application: &str,
         pwd: &str,
     ) -> Result<bool, UserServiceError> {
-        match self
+        let user = match self
             .user_repository
-            .get_user_by_email(&email.to_string())
-            .await
-            .map_err(|err| UserServiceError::DatabaseError(err.to_string()))
-        {
-            Ok(user) => match user {
-                None => Ok(self.fake_authentication(pwd, true).await),
-                user => {
-                    match self
-                        .user_repository
-                        .get_access_by_user_id_and_application(
-                            user.unwrap().id,
-                            &application.to_string(),
-                        )
-                        .await
-                        .map_err(|err| UserServiceError::DatabaseError(err.to_string()))
-                    {
-                        Ok(Some(access)) => {
-                            Ok(self.crypto_service.verify_hash(&pwd, &access.pwd_hash))
-                        }
-                        _ => Ok(self.fake_authentication(pwd, false).await),
-                    }
-                }
-            },
-            _ => Ok(self.fake_authentication(pwd, true).await),
-        }
+            .get_user_by_email(&email)
+            .await {
+            Ok(Some(user)) => user,
+            Ok(None) => {
+                self.fake_authentication(pwd, true).await;
+                return Err(UserServiceError::UserNotFound(email.to_string()));
+            }
+            Err(err) => {
+                self.fake_authentication(pwd, true).await;
+                return Err(UserServiceError::DatabaseError(err.to_string()));
+            }
+        };
+        let access = match self
+            .user_repository
+            .get_access_by_user_id_and_application(user.id, &application)
+            .await {
+            Ok(Some(access)) => access,
+            Ok(None) => {
+                self.fake_authentication(pwd, false).await;
+                return Err(UserServiceError::AuthenticationFailed);
+            }
+            Err(err) => {
+                return Err(UserServiceError::DatabaseError(err.to_string()));
+            }
+        };
+        Ok(self
+            .crypto_service
+            .verify_hash(pwd, &access.pwd_hash))
     }
 }

@@ -4,26 +4,23 @@ use sea_orm::{DatabaseConnection, DbErr};
 use sea_orm::JoinType::InnerJoin;
 use crate::config::db_config::DbConfig;
 use crate::entities::{accesses, users};
-use crate::entities::accesses::Relation::Users;
-use crate::entities::users::Relation::Accesses;
 
 pub struct UserRepository {
     db_conn: DatabaseConnection
 }
-
-
 
 impl UserRepository {
     pub fn new(db_conn: DatabaseConnection) -> Self {
         UserRepository { db_conn }
     }
     pub async fn from_config(config: DbConfig) -> Self {
-        UserRepository::new(config.get_db_connection().await)
+        let db_conn = config.get_db_connection().await;
+        UserRepository::new(db_conn)
     }
 
     pub async fn get_user_by_email(&self, email: &str) -> Result<Option<users::Model>, DbErr> {
         users::Entity::find()
-            .filter(users::Column::Email.eq(email.to_owned()))
+            .filter(users::Column::Email.eq(email))
             .one(&self.db_conn)
             .await
     }
@@ -46,7 +43,7 @@ impl UserRepository {
     ) -> Result<Option<accesses::Model>, DbErr> {
         accesses::Entity::find()
             .filter(accesses::Column::UserId.eq(user_id))
-            .filter(accesses::Column::Application.eq(application.to_owned()))
+            .filter(accesses::Column::Application.eq(application))
             .one(&self.db_conn)
             .await
     }
@@ -58,8 +55,8 @@ impl UserRepository {
     ) -> Result<Option<accesses::Model>, DbErr> {
         accesses::Entity::find()
             .join(InnerJoin, accesses::Relation::Users.def())
-            .filter(accesses::Column::Application.eq(application.to_owned()))
-            .filter(users::Column::Email.eq(email.to_owned()))
+            .filter(accesses::Column::Application.eq(application))
+            .filter(users::Column::Email.eq(email))
             .one(&self.db_conn)
             .await
     }
