@@ -1,6 +1,5 @@
 use crate::config::app_config::AppConfig;
 use crate::config::db_config::DbConfig;
-use crate::config::logging_config::LoggingConfig;
 use config::{Config, File, FileFormat};
 use serde::Deserialize;
 use std::env;
@@ -10,7 +9,6 @@ use std::path::Path;
 pub struct Settings {
     pub db: DbConfig,
     pub app: AppConfig,
-    pub logging: LoggingConfig,
 }
 
 pub trait ConfigLoader {

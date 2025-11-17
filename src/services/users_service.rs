@@ -20,9 +20,7 @@ impl fmt::Display for UserServiceError {
             UserServiceError::UserAlreadyExists(email) => write!(f, "User already exists: {}", email),
             UserServiceError::AccessNotFound => write!(f, "Authentication failed"),
             UserServiceError::DatabaseError(msg) => write!(f, "Database error: {}", msg),
-            _ => {
-                write!(f, "Unknown error")
-            }
+            UserServiceError::UserNotFound(email) => write!(f, "User not found: {}", email),
         }
     }
 }

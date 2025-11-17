@@ -26,10 +26,6 @@ impl UserRepository {
             .await
     }
 
-    pub async fn user_exists(&self, email: &str) -> Result<bool, DbErr> {
-        Ok(self.get_user_by_email(email).await?.is_some())
-    }
-
     pub async fn get_or_insert(&self, email: &str) -> Result<users::Model, DbErr> {
        if let Some(user) = self.get_user_by_email(email).await? {
            return Ok(user)
@@ -92,21 +88,6 @@ impl UserRepository {
             .insert(&self.db_conn)
             .await?
             .id)
-    }
-
-    pub async fn delete_user(&self, email: &str) -> Result<(), DbErr> {
-        if let Some(user) = self.get_user_by_email(email).await? {
-            users::Entity::delete_by_id(user.id).exec(&self.db_conn).await?;
-        }
-        Ok(())
-    }
-
-    pub async fn delete_access(&self, user_id: i64) -> Result<(), DbErr> {
-        accesses::Entity::delete_many()
-            .filter(accesses::Column::UserId.eq(user_id))
-            .exec(&self.db_conn)
-            .await?;
-        Ok(())
     }
 
     pub async fn update_access_pwd_by_user_mail_and_application(&self, user_mail: &str, application: &str, pwd_hash: &str) -> Result<(), DbErr> {

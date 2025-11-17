@@ -26,8 +26,3 @@ pub struct UpdateUserPasswordRequest {
     pub old_pwd: String,
     pub new_pwd: String,
 }
-
-#[derive(Deserialize)]
-pub struct DeleteUserRequest {
-    pub email: String,
-}

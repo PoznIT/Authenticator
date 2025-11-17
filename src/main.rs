@@ -1,8 +1,6 @@
 use crate::app::app::run_app;
 use crate::config::config::ConfigLoader;
 use crate::services::users_service::UserService;
-
-use env_logger::{Builder, Env};
 use log::info;
 
 mod config;
