@@ -30,12 +30,13 @@ impl fmt::Display for UserServiceError {
 
 impl std::error::Error for UserServiceError {}
 
-pub struct UserService<'a> {
+#[derive(Clone)]
+pub struct UserService {
     user_repository: UserRepository,
-    crypto_service: CryptoService<'a>,
+    crypto_service: CryptoService,
 }
 
-impl<'a> UserService<'a> {
+impl UserService {
     pub fn new(user_repository: UserRepository) -> Self {
         UserService {
             user_repository,

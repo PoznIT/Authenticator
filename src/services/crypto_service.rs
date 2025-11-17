@@ -6,11 +6,12 @@ use argon2::{
     Argon2
 };
 
-pub struct CryptoService<'a> {
-    argon: Argon2<'a>,
+#[derive(Clone)]
+pub struct CryptoService {
+    argon: Argon2<'static>,
 }
 
-impl <'a> CryptoService<'a> {
+impl CryptoService {
     pub fn new() -> Self {
         CryptoService {
             argon: Argon2::default(),

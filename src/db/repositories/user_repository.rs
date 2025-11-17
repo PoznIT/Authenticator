@@ -5,6 +5,7 @@ use sea_orm::JoinType::InnerJoin;
 use crate::config::db_config::DbConfig;
 use crate::entities::{accesses, users};
 
+#[derive(Clone)]
 pub struct UserRepository {
     db_conn: DatabaseConnection
 }
