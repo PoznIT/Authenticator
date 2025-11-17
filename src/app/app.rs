@@ -1,10 +1,10 @@
-use std::net::SocketAddr;
-use tokio::net::TcpListener;
-use axum::{serve, Router};
-use log::info;
 use crate::app::routes::users_routes::init_routes;
 use crate::config::app_config::AppConfig;
 use crate::services::users_service::UserService;
+use axum::{serve, Router};
+use log::info;
+use std::net::SocketAddr;
+use tokio::net::TcpListener;
 use tower_http::trace::TraceLayer;
 
 #[derive(Clone)]

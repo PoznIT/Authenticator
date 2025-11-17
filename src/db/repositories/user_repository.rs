@@ -1,9 +1,9 @@
+use crate::config::db_config::DbConfig;
+use crate::entities::{accesses, users};
+use sea_orm::JoinType::InnerJoin;
 use sea_orm::{ActiveModelTrait, QueryFilter, QuerySelect, RelationTrait};
 use sea_orm::{ColumnTrait, EntityTrait};
 use sea_orm::{DatabaseConnection, DbErr};
-use sea_orm::JoinType::InnerJoin;
-use crate::config::db_config::DbConfig;
-use crate::entities::{accesses, users};
 
 #[derive(Clone)]
 pub struct UserRepository {

@@ -1,8 +1,8 @@
 use crate::config::db_config::DbConfig;
 use crate::db::repositories::user_repository::UserRepository;
 use crate::services::crypto_service::CryptoService;
-use std::fmt;
 use log::info;
+use std::fmt;
 
 #[derive(Debug)]
 pub enum UserServiceError {

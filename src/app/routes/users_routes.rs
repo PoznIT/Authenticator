@@ -1,11 +1,11 @@
+use crate::app::app::AppState;
+use crate::app::routes::users_dto::{AuthenticateUserRequest, RegisterUserRequest, UpdateUserPasswordRequest};
+use crate::services::users_service::UserServiceError;
 use axum::extract::State;
-use axum::{Json, Router};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
-use axum::routing::{get, post};
-use crate::app::app::AppState;
-use crate::app::routes::users_dto::{AuthenticateUserRequest, DeleteUserRequest, RegisterUserRequest, UpdateUserPasswordRequest};
-use crate::services::users_service::UserServiceError;
+use axum::routing::post;
+use axum::{Json, Router};
 
 impl IntoResponse for UserServiceError {
     fn into_response(self) -> axum::response::Response {
