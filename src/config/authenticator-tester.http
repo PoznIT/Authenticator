@@ -1,0 +1,32 @@
+### Register a new user
+POST http://localhost:6767/users/register
+Content-Type: application/json
+
+{
+  "email": "b@b.com",
+  "access": {
+    "application": "blablb",
+    "pwd": "12345678aA!"
+  }
+}
+
+### Authenticate user
+POST http://localhost:6767/users/authenticate
+Content-Type: application/json
+
+{
+  "email": "a@a.com",
+  "application": "blabla",
+  "pwd": "12345678aA!"
+}
+
+### Change password
+POST http://localhost:6767/users/change_password
+Content-Type: application/json
+
+{
+  "email": "a@a.com",
+  "application": "blabla",
+  "old_pwd": "12345678aA!",
+  "new_pwd": "87654321aA!"
+}

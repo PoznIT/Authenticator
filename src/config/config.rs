@@ -1,12 +1,16 @@
 use crate::config::db_config::DbConfig;
+use crate::config::app_config::AppConfig;
 use config::{Config, File, FileFormat};
 use serde::Deserialize;
 use std::env;
 use std::path::Path;
+use crate::config::logging_config::LoggingConfig;
 
 #[derive(Debug, Deserialize)]
 pub struct Settings {
-    pub db_config: DbConfig,
+    pub db: DbConfig,
+    pub app: AppConfig,
+    pub logging: LoggingConfig,
 }
 
 pub trait ConfigLoader {

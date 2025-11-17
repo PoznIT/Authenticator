@@ -2,13 +2,13 @@ use crate::config::db_config::DbConfig;
 use crate::db::repositories::user_repository::UserRepository;
 use crate::services::crypto_service::CryptoService;
 use std::fmt;
+use log::info;
 
 #[derive(Debug)]
 pub enum UserServiceError {
     PasswordComplexityNotMet,
-    InvalidPassword(String),
     UserAlreadyExists(String),
-    AuthenticationFailed,
+    AccessNotFound,
     DatabaseError(String),
     UserNotFound(String),
 }
@@ -17,9 +17,8 @@ impl fmt::Display for UserServiceError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             UserServiceError::PasswordComplexityNotMet => write!(f, "Password does not meet complexity requirements: at least 8 characters, including uppercase, lowercase, and digit."),
-            UserServiceError::InvalidPassword(msg) => write!(f, "Invalid password: {}", msg),
             UserServiceError::UserAlreadyExists(email) => write!(f, "User already exists: {}", email),
-            UserServiceError::AuthenticationFailed => write!(f, "Authentication failed"),
+            UserServiceError::AccessNotFound => write!(f, "Authentication failed"),
             UserServiceError::DatabaseError(msg) => write!(f, "Database error: {}", msg),
             _ => {
                 write!(f, "Unknown error")
@@ -83,7 +82,7 @@ impl UserService {
             .map_err(|err| UserServiceError::DatabaseError(err.to_string()))
     }
 
-    async fn update_user_pwd(
+    pub async fn update_user_pwd(
         &self,
         email: &str,
         application: &str,
@@ -96,7 +95,7 @@ impl UserService {
             .await
             .map_err(|err| UserServiceError::DatabaseError(err.to_string()))?
         {
-            return Err(UserServiceError::AuthenticationFailed);
+            return Err(UserServiceError::AccessNotFound);
         }
         let hash_new_pwd = self.crypto_service.hash_str(new_pwd);
         self
@@ -124,6 +123,7 @@ impl UserService {
         application: &str,
         pwd: &str,
     ) -> Result<bool, UserServiceError> {
+        info!("UserService::authenticate_user with email: {}, application: {}", email, application);
         let user = match self
             .user_repository
             .get_user_by_email(&email)
@@ -145,7 +145,7 @@ impl UserService {
             Ok(Some(access)) => access,
             Ok(None) => {
                 self.fake_authentication(pwd, false).await;
-                return Err(UserServiceError::AuthenticationFailed);
+                return Err(UserServiceError::AccessNotFound);
             }
             Err(err) => {
                 return Err(UserServiceError::DatabaseError(err.to_string()));
