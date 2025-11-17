@@ -38,6 +38,13 @@ impl UserRepository {
             .one(&self.db_conn)
             .await
     }
+    
+    pub async fn access_exists(&self, user_id: i64, application: &str) -> Result<bool, DbErr> {
+        Ok(self
+            .get_access_by_user_id_and_application(user_id, application)
+            .await?
+            .is_some())
+    }
 
     pub async fn insert_user(&self, email: &str) -> Result<i64, DbErr> {
         let inserted_user = users::ActiveModel {

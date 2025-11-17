@@ -15,7 +15,7 @@ impl UserService {
         UserService::new(UserRepository::from_config(config).await).await
     }
 
-    pub async fn new_user(&self, email: &str, application: &str, pwd: &str) -> Result<i64, String> {
+    pub async fn new_user_access(&self, email: &str, application: &str, pwd: &str) -> Result<i64, String> {
         if pwd.len() < 8
             || !pwd.chars().any(|c| c.is_ascii_uppercase())
             || !pwd.chars().any(|c| c.is_ascii_lowercase())
@@ -23,21 +23,37 @@ impl UserService {
         {
             return Err("Password does not meet complexity requirements: at least 8 characters, including uppercase, lowercase, and digit.".to_string());
         }
-        if self.user_repository.user_exists(email).await.unwrap() {
-            return Err("User with this email already exists.".to_string());
+        let user_id = if !(self.user_repository.user_exists(email).await.unwrap()) {
+            self.user_repository.insert_user(email).await.unwrap()
+        } else {
+            self.user_repository
+                .get_user_by_email(email)
+                .await
+                .unwrap()
+                .unwrap()
+                .id
+        };
+        if self
+            .user_repository
+            .access_exists(user_id, application)
+            .await
+            .unwrap()
+        {
+            return Err(format!("User {} already exists", email));
         }
-        let user_id = self.user_repository.insert_user(email).await.unwrap();
-        let access_id = self
+        Ok(self
             .user_repository
             .insert_access(user_id, application, &hash_str(pwd))
             .await
-            .unwrap();
-        Ok(access_id)
+            .unwrap())
     }
 
     async fn fake_authentication(&self, pwd: &str, with_fake_access_query: bool) -> bool {
         if with_fake_access_query {
-            let _ = self.user_repository.get_access_by_user_id_and_application(-1, "123").await;
+            let _ = self
+                .user_repository
+                .get_access_by_user_id_and_application(-1, "123")
+                .await;
         }
         hash_str(pwd);
         false
@@ -49,7 +65,11 @@ impl UserService {
         application: &str,
         pwd: &str,
     ) -> Result<bool, DbErr> {
-        match self.user_repository.get_user_by_email(&email.to_string()).await {
+        match self
+            .user_repository
+            .get_user_by_email(&email.to_string())
+            .await
+        {
             Ok(user) => match user {
                 None => Ok(self.fake_authentication(pwd, true).await),
                 user => {
