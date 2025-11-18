@@ -29,10 +29,11 @@ jobs:
     needs: checks
     uses: poznit/workflows/.github/workflows/template-build-release.yml@main
     with:
-      working-directory: ./flyway
+      working-directory: ./db
       app-name: authenticator-flyway
       runner: ubuntu-24.04
     secrets: inherit
+
   deploy:
     needs: [ build-release-app, build-release-flyway ]
     runs-on: ubuntu-latest
