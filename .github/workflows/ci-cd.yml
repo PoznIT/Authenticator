@@ -31,13 +31,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Prepare deployment
+        uses: poznit/workflows/.github/actions/prepare-deploy@main
       - name: Create override file
         run: |
-          echo "services:" > docker-compose.override.yml
-          echo "  app:" >> docker-compose.override.yml
-          echo "    image: ${{ secrets.DOCKERHUB_USER }}/authenticator:${{ github.sha }}" >> docker-compose.override.yml
+          cat > docker-compose.override.yml << EOL
+          services:
+            backend:
+              image: ${{ secrets.DOCKERHUB_USER }}/authenticator:${{ github.sha }}
+              build: {}
+          EOL
       - name: deploy
-        uses: poznit/workflows/.github/workflows/template-deployment.yml@main
+        uses: poznit/workflows/.github/actions/deploy@main
         with:
           compose_file: docker-compose.yml
           compose_override_file: docker-compose.override.yml
