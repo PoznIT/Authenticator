@@ -27,14 +27,18 @@ jobs:
 
   deploy:
     needs: [ docker-build-release ]
-    uses: poznit/workflows/.github/workflows/template-deployment.yml@main
-    with:
-      compose_file: docker-compose.yml
-      compose_override_file: docker-compose.override.yml
-      compose_override_file_content: |
-        services:
-          app:
-            image: ${{ secrets.DOCKERHUB_USER }}/authenticator:${{ github.sha }}
-            build: {}
-      deployment_folder: "./deploy"
-    secrets: inherit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Create override file
+        run: |
+          echo "services:" > docker-compose.override.yml
+          echo "  app:" >> docker-compose.override.yml
+          echo "    image: ${{ secrets.DOCKERHUB_USER }}/authenticator:${{ github.sha }}" >> docker-compose.override.yml
+      - name: deploy
+        uses: poznit/workflows/.github/workflows/template-deployment.yml@main
+        with:
+          compose_file: docker-compose.yml
+          compose_override_file: docker-compose.override.yml
+          deployment_folder: "~/.deploy"
