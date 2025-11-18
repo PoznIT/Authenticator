@@ -42,7 +42,7 @@ jobs:
         run: |
           cat > docker-compose.override.yml << EOL
           services:
-            backend:
+            app:
               image: ${{ secrets.DOCKERHUB_USER }}/authenticator:${{ github.sha }}
               build: {}
           EOL
