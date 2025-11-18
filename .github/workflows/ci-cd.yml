@@ -10,21 +10,19 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  checks:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: Cargo lock check
       run: cargo check --locked
-    - name: Build
-      run: cargo build --verbose
 
   docker-build-release:
-    needs: build
+    needs: checks
     uses: poznit/workflows/.github/workflows/template-build-release.yml@main
     with:
       working-directory: ./frontend
-      app-name: seekretsanta-frontend
+      app-name: authenticator
       runner: ubuntu-24.04
     secrets: inherit
 
