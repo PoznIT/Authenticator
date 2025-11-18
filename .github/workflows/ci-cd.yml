@@ -44,7 +44,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: docker-compose.yml
-          target: ".deploy/${{ github.event.repository.name }}/"
+          target: "~/.deploy/${{ github.event.repository.name }}/"
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
@@ -59,4 +59,3 @@ jobs:
             docker rmi $(docker images -a -q)
             docker compose pull
             docker compose up -d
-            
