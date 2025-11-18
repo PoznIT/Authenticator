@@ -10,6 +10,24 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    networks:
+      - poznit-network
+  app:
+    image: pozniako/authenticator
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "6767:6767"
+    networks:
+      - poznit-network
 
 volumes:
   db_data:
+
+networks:
+  poznit-network:
+    driver: bridge

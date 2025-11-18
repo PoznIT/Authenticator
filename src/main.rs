@@ -11,7 +11,13 @@ mod app;
 
 #[tokio::main]
 async fn main() {
-    let config = config::config::Settings::load_config(Some("config.yml".to_string())).unwrap();
+    let args: Vec<String> = std::env::args().collect();
+    let config_path = if args.len() > 1 {
+        &args[1]
+    } else {
+        "config-dev.yml"
+    };
+    let config = config::config::Settings::load_config(Some(config_path.to_string())).unwrap();
     tracing_subscriber::fmt()
         .with_max_level(tracing::Level::INFO)
         .init();

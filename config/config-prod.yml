@@ -2,13 +2,13 @@ db:
   username: postgres
   password: postgres
   db_name: authenticator
-  host: localhost
+  host: db
   port: 5432
 access:
   applications:
     - seekretsanta
 app:
   port: 6767
-  host: 127.0.0.1
+  host: 0.0.0.0
 logging:
   level: info

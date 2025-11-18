@@ -1,0 +1,14 @@
+db:
+  username: postgres
+  password: postgres
+  db_name: authenticator
+  host: localhost
+  port: 5432
+access:
+  applications:
+    - seekretsanta
+app:
+  port: 6767
+  host: 127.0.0.1
+logging:
+  level: debug
