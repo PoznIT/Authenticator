@@ -44,7 +44,6 @@ jobs:
           services:
             app:
               image: ${{ secrets.DOCKERHUB_USER }}/authenticator:${{ github.sha }}
-              build: {}
           EOL
       - name: deploy
         uses: poznit/workflows/.github/actions/deploy@main
