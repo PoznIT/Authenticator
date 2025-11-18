@@ -37,3 +37,4 @@ jobs:
             image: ${{ secrets.DOCKERHUB_USER }}/authenticator:${{ github.sha }}
             build: {}
       deployment_folder: "./deploy"
+    secrets: inherit
