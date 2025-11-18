@@ -29,6 +29,7 @@ jobs:
     needs: [ docker-build-release ]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Ensure deployment directory exists on server
         uses: appleboy/ssh-action@v1
         with:
