@@ -21,7 +21,6 @@ jobs:
     needs: checks
     uses: poznit/workflows/.github/workflows/template-build-release.yml@main
     with:
-      working-directory: ./frontend
       app-name: authenticator
       runner: ubuntu-24.04
     secrets: inherit
