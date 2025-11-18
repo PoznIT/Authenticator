@@ -29,6 +29,14 @@ jobs:
     needs: [ docker-build-release ]
     runs-on: ubuntu-latest
     steps:
+      - name: Ensure deployment directory exists on server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            mkdir -p ~/.deploy/${{ github.event.repository.name }}
       - name: Copy files to server
         uses: appleboy/scp-action@v0.1.3
         with:
