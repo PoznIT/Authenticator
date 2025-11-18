@@ -59,3 +59,4 @@ jobs:
             docker rmi $(docker images -a -q)
             docker compose pull
             docker compose up -d
+            

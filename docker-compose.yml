@@ -27,7 +27,6 @@ services:
 
 volumes:
   db_data:
-
 networks:
   poznit-network:
     driver: bridge
