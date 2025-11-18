@@ -10,6 +10,22 @@ services:
       - db_data:/var/lib/postgresql/data
     networks:
       - poznit-network
+  flyway:
+    image: pozniako/flyway
+    build:
+      context: .
+      dockerfile: Dockerfile.flyway
+    environment:
+      - FLYWAY_USER=postgres
+      - FLYWAY_PASSWORD=postgres
+      - FLYWAY_URL=jdbc:postgresql://db:5432/authenticator
+      - DB_HOST=db
+      - DB_PORT=5432
+    depends_on:
+      - db
+    networks:
+      - poznit-network
+    restart: no
   app:
     image: pozniako/authenticator
     build:
@@ -17,7 +33,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     depends_on:
-      - db
+      - flyway
     ports:
       - "6767:6767"
     networks:

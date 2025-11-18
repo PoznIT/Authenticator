@@ -21,6 +21,9 @@ async fn main() {
     tracing_subscriber::fmt()
         .with_max_level(tracing::Level::INFO)
         .init();
+
+    info!("Running db migrations...");
+
     info!("Starting authenticator...");
     let user_service = UserService::from_config(config.db).await;
     run_app(user_service, config.app).await;
