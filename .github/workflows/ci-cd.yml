@@ -31,5 +31,5 @@ jobs:
     with:
       compose_file: docker-compose.yml
       compose_override_file: docker-compose.override.yml
-      deployment_folder: .deploy
+      deployment_folder: .deploy/authenticator
     secrets: inherit
