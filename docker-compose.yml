@@ -14,7 +14,7 @@ services:
     image: pozniako/flyway
     build:
       context: .
-      dockerfile: Dockerfile.flyway
+      dockerfile: db/Dockerfile
     environment:
       - FLYWAY_USER=postgres
       - FLYWAY_PASSWORD=postgres

@@ -17,7 +17,7 @@ jobs:
     - name: Cargo lock check
       run: cargo check --locked
 
-  docker-build-release:
+  build-release-app:
     needs: checks
     uses: poznit/workflows/.github/workflows/template-build-release.yml@main
     with:
@@ -25,8 +25,16 @@ jobs:
       runner: ubuntu-24.04
     secrets: inherit
 
+  build-release-flyway:
+    needs: checks
+    uses: poznit/workflows/.github/workflows/template-build-release.yml@main
+    with:
+      working-directory: ./flyway
+      app-name: authenticator-flyway
+      runner: ubuntu-24.04
+    secrets: inherit
   deploy:
-    needs: [ docker-build-release ]
+    needs: [ build-release-app, build-release-flyway ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
