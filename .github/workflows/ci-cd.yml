@@ -61,7 +61,7 @@ jobs:
               image: ${{ secrets.DOCKERHUB_USER }}/authenticator-flyway:${{ github.sha }}
           EOL
       - name: deploy
-        uses: poznit/workflows/.github/actions/deploy@v1.0.0
+        uses: poznit/workflows/.github/actions/deploy@v1.0.1
         with:
           compose_file: docker-compose.yml
           compose_override_file: docker-compose.override.yml
