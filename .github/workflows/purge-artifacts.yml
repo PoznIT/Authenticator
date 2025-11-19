@@ -11,3 +11,4 @@ jobs:
     with:
       repository: ${{ github.repository }}
       personal_github_token: ${{ secrets.ARTIFACT_PURGE_TOKEN }}
+    secrets: inherit
