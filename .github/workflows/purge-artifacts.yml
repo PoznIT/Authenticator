@@ -4,7 +4,6 @@ on:
     - cron: '0 2 * * *'
   workflow_dispatch:
 
-
 jobs:
   purge:
     uses: poznit/workflows/.github/workflows/purge-artifacts.yml@main
