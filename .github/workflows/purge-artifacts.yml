@@ -1,4 +1,4 @@
-name: purge-artifacts.yml
+name: Artifact purge
 on:
   schedule:
     - cron: '0 2 * * *'
