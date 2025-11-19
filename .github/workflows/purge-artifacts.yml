@@ -1,4 +1,5 @@
 name: Artifacts purge
+
 on:
   schedule:
     - cron: '0 2 * * *'
