@@ -7,7 +7,7 @@ on:
 
 jobs:
   purge:
-    uses: poznit/workflows/.github/workflows/purge-artifacts.yml@main
+    uses: poznit/workflows/.github/workflows/purge-artifacts.yml@v1.0.0
     with:
       repository: ${{ github.repository }}
     secrets:
