@@ -10,5 +10,5 @@ jobs:
     uses: poznit/workflows/.github/workflows/purge-artifacts.yml@main
     with:
       repository: ${{ github.repository }}
+    secrets:
       personal_github_token: ${{ secrets.ARTIFACT_PURGE_TOKEN }}
-    secrets: inherit
