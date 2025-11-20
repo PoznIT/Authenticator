@@ -4,6 +4,12 @@ Basic authentication service to normalize accesses across multiple services.
 
 ## Usage
 
+## Build and run locally
+
+```bash
+docker-compose up -d
+```
+
 ## Send POST request with json body to deployment
 
 ```bash
